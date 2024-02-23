@@ -12,6 +12,9 @@ def init_opengl_program(window):
 	# Ładowanie programów cieniujących
 	DemoShaders.initShaders("helpers/shaders/")
 
+Cube = Sphere()
+Torus = Torus()
+Teapot = Teapot()
 
 def draw_scene(window):
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -30,13 +33,17 @@ def draw_scene(window):
 	M = glm.mat4(1.0)
 	glUniformMatrix4fv(DemoShaders.spConstant.u("M"), 1, GL_FALSE, M.to_list())
 
-	# TU RYSUJEMY
+	Cube.drawWire()
+	Teapot.drawWire()
+	Torus.drawWire()
 
 	glfw.swap_buffers(window)
 
 def free_opengl_program(window):
 	# Możesz dodać odpowiednie czyszczenie zasobów tutaj, jeśli jest to konieczne
 	pass
+
+
 
 def main():
 	glfw.init()
@@ -51,6 +58,7 @@ def main():
 	while not glfw.window_should_close(window):
 		draw_scene(window)
 		glfw.poll_events()
+		
 
 	free_opengl_program(window)
 	glfw.terminate()
