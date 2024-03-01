@@ -12,8 +12,11 @@ def init_opengl_program(window):
 	# Ładowanie programów cieniujących
 	DemoShaders.initShaders("helpers/shaders/")
 
+sun = Sphere(.5)
+earth = Sphere(.2)
+moon = Sphere(.1)
 
-def draw_scene(window):
+def draw_scene(window,time):
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
 	V = glm.lookAt(
@@ -30,7 +33,22 @@ def draw_scene(window):
 	M = glm.mat4(1.0)
 	glUniformMatrix4fv(DemoShaders.spConstant.u("M"), 1, GL_FALSE, M.to_list())
 
-	# TU RYSUJEMY
+	sun.drawWire()
+	## earth
+	mEarth = glm.mat4(1.0)
+	mEarth *= glm.rotate(glm.radians(60)*time, glm.vec3(0, 1, 0))
+	mEarth *= glm.translate(glm.vec3(1.5, 0, 0))
+
+	glUniformMatrix4fv(DemoShaders.spConstant.u("M"), 1, GL_FALSE, mEarth.to_list())
+	earth.drawSolid()
+
+	## moon
+	mMoon = mEarth
+	mMoon *= glm.rotate(glm.radians(60)*time, glm.vec3(0, 1, 0))
+	mMoon *= glm.translate(glm.vec3(.5, 0, 0))
+	
+	glUniformMatrix4fv(DemoShaders.spConstant.u("M"), 1, GL_FALSE, mMoon.to_list())
+	moon.drawSolid()
 
 	glfw.swap_buffers(window)
 
@@ -49,7 +67,7 @@ def main():
 	glfw.set_time(0)
 
 	while not glfw.window_should_close(window):
-		draw_scene(window)
+		draw_scene(window,glfw.get_time())
 		glfw.poll_events()
 
 	free_opengl_program(window)
