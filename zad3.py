@@ -12,8 +12,9 @@ def init_opengl_program(window):
 	# Ładowanie programów cieniujących
 	DemoShaders.initShaders("helpers/shaders/")
 
+Sphere = Sphere()
 
-def draw_scene(window):
+def draw_scene(window,time):
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
 	V = glm.lookAt(
@@ -28,9 +29,13 @@ def draw_scene(window):
 	glUniformMatrix4fv(DemoShaders.spConstant.u("V"), 1, GL_FALSE, V.to_list())
 
 	M = glm.mat4(1.0)
+	M *= glm.rotate(glm.radians(60)*time, glm.vec3(0, 1, 0))
+
 	glUniformMatrix4fv(DemoShaders.spConstant.u("M"), 1, GL_FALSE, M.to_list())
 
-	# TU RYSUJEMY
+	
+	
+	Sphere.drawWire()
 
 	glfw.swap_buffers(window)
 
@@ -49,7 +54,7 @@ def main():
 	glfw.set_time(0)
 
 	while not glfw.window_should_close(window):
-		draw_scene(window)
+		draw_scene(window, glfw.get_time())
 		glfw.poll_events()
 
 	free_opengl_program(window)
